@@ -1,0 +1,203 @@
+#:import ln kivy.graphics.vertex_instructions.Line
+#:set offset 5
+#:set txtFontSize 30
+#:set txtFldW 60
+#:set txtFldH 50
+
+<PinEntry>:
+    font_size: txtFontSize
+    hint_text: "0"
+
+<ScheduleEntry>:
+    hint_text: "(9,10), (5, 7)"
+    multiline: False
+    color: 1, 1, 1, 1
+
+# Login Screen Layout
+<LoginScreen>
+    BoxLayout:
+        orientation: "vertical"
+        canvas.before:
+
+            Rectangle:
+                pos: self.pos
+                size: self.size
+                source: 'login.jpg'            
+
+        # PIN entry box
+        BoxLayout:
+            id: loginGrid
+            orientation: "horizontal"
+        
+            padding: int(self.width * .1)            
+            spacing : int(self.width / (6 + 5))
+            canvas:
+                Color:
+                    rgba: 0, 1, 0, 1
+                Line: 
+                    rounded_rectangle: self.pos[0] + offset, self.pos[1] + offset, self.size[0] - (offset*2), self.size[1] - (offset*2), 10
+
+            Label:
+                id: lbl1
+                text: "PIN: "
+                font_size: 20
+                bold: True
+                size_hint: None, None
+                size: int(self.parent.width / 12), int(self.parent.height / 7)
+                #size: txtFldW, txtFldH
+            PinEntry:
+                id: PIN1
+                name: 'PIN1'
+                size_hint: None, None
+                size: int(self.parent.width / 12), int(self.parent.height / 7)
+                #size: txtFldW, txtFldH
+                focus: True
+            PinEntry:
+                id: PIN2
+                name: 'PIN2'
+                size_hint: None, None
+                size: int(self.parent.width / 12), int(self.parent.height / 7)
+                #size: txtFldW, txtFldH
+            PinEntry:
+                id: PIN3
+                name: 'PIN3'
+                size_hint: None, None
+                size: int(self.parent.width / 12), int(self.parent.height / 7)
+                #size: txtFldW, txtFldH
+            PinEntry:
+                id: PIN4
+                name: 'PIN4'
+                size_hint: None, None
+                size: int(self.parent.width / 12), int(self.parent.height / 7)
+                #size: txtFldW, txtFldH
+                
+
+        # message label
+        BoxLayout:
+            orientation: "vertical"
+            padding: int(self.width * .1)            
+            canvas:
+                Color:
+                    rgba: 0, 1, 0, 1
+                Line: 
+                    rounded_rectangle: self.pos[0] + offset, self.pos[1] + offset, self.size[0] - (offset*2), self.size[1] - (offset*2), 10
+
+            Label:
+                id: loginLbl
+                font_size: 22
+                text_size: root.width, None
+                size: self.texture_size
+                padding: 10, 10
+                text: ""
+
+
+# Screen where the schedule is entered
+<MainScreen>
+    # Schedule entry box and label
+    BoxLayout:
+        orientation: "vertical"
+        canvas.before:
+            Rectangle:
+                pos: self.pos
+                size: self.size
+                source: 'download.jpg'            
+
+        GridLayout:
+            cols: 2
+            rows: 2
+            #pos: self.pos
+            #size: self.size
+            spacing: 5
+            padding: int(self.width * .1)            
+
+            canvas:
+                Color:
+                    rgba: 0, 1, 0, 1
+                Line: 
+                    rounded_rectangle: self.pos[0] + offset, self.pos[1] + offset, self.size[0] - (offset*2), self.size[1] - (offset*2), 10
+            Label:
+                text: ""
+                size_hint: .2, .2
+
+            Label:
+                text: "(From Hour, To Hour), (From Hour, To Hour)..."
+                font_size: 18
+                size_hint: .7, .2
+
+            Label:
+                canvas:
+                    Color:
+                        rgba: 0, 1, 0, 1
+                    Line: 
+                        rounded_rectangle: self.pos[0], self.pos[1], self.size[0], self.size[1], 10
+
+                size: self.texture_size
+                valign: "center"
+                text: "Time range:"
+                font_size: 20
+                color: 1, 1, 1, 1
+                size_hint: .2, .1
+            ScheduleEntry:
+                id: schEntry
+                focus: True
+                font_size: 20
+                size_hint: .5, .1
+                #height: 50 #int(self.parent.height * .15)
+                on_text_validate: 
+                    app.validate_input(self.text, self.parent.parent.parent.ids.msg)
+
+        # Box to hold the Save Button
+        BoxLayout:
+            orientation: "horizontal"
+            pos: self.pos
+            size: self.size
+            spacing: 10
+            padding: 10
+
+            canvas:
+                Color:
+                    rgba: 0, 1, 0, 1
+
+                Line: 
+                    rounded_rectangle: self.pos[0] + offset, self.pos[1] + offset, self.size[0] - (offset*2), self.size[1] - (offset*2), 10
+
+            Button:
+                id: saveBtn
+                text: "Save"
+                size_hint: .3, .2
+                on_press:
+                    app.validate_input(self.parent.parent.parent.ids.schEntry.text, self.parent.parent.parent.ids.msg)
+
+            Button:
+                id: cancelBtn
+                text: "Cancel"
+                size_hint: .3, .2
+                on_press:
+                    app.cancel_pressed()
+
+            Button:
+                id: startBtn
+                text: "Start Service"
+                size_hint: .4, .2
+                
+        BoxLayout:
+            orientation: "vertical"
+            pos: self.pos
+            size: self.size
+            spacing: 10
+            padding: 10
+
+            canvas:
+                Color:
+                    rgba: 0, 1, 0, 1
+
+                Line: 
+                    rounded_rectangle: self.pos[0] + offset, self.pos[1] + offset, self.size[0] - (offset*2), self.size[1] - (offset*2), 10
+
+            Label:
+                id: msg
+                padding: 10, 5
+                text_size: root.width, None
+                size: self.texture_size
+                font_size: 22
+                text: "Status Message"
